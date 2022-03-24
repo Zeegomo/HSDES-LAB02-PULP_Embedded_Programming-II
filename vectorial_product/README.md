@@ -13,7 +13,7 @@ On the contrary, _A_ and _B_ vectors are stored in the embedded L2 memory.
 ## Getting Started
 To get started with the example, simply:
 ~~~~~shell
-cd double_buffering/
+cd vectorial_product/
 make clean all run
 ~~~~~
 The code makes use of the PMISIS APIs to allocate variables on the external RAM and to perform R/W operations. 
