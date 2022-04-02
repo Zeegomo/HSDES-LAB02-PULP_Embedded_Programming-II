@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Board &mdash; Pulp SDK 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pulp SDK 1 documentation" href="index.html" />
+    <link rel="next" title="PulpOS" href="pulpos.html" />
+    <link rel="prev" title="GVSOC" href="virtual_platform.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pulpos.html" title="PulpOS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="virtual_platform.html" title="GVSOC"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pulp SDK 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="board">
+<h1>Board<a class="headerlink" href="#board" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="board-setup">
+<h2>Board setup<a class="headerlink" href="#board-setup" title="Permalink to this headline">¶</a></h2>
+<p>In case one of the pulp board must be used, the USB connection to the board through the FTDI cable must be setup.
+Most of the time a rule like the following must be added under /etc/udev/rules.d/, for example in /etc/udev/rules.d/10-ftdi.rules:</p>
+<div class="highlight-python"><div class="highlight"><pre>ATTR{idVendor}==&quot;15ba&quot;, ATTR{idProduct}==&quot;002b&quot;, MODE=&quot;0666&quot;, GROUP=&quot;dialout&quot;
+ATTR{idVendor}==&quot;15ba&quot;, ATTR{idProduct}==&quot;002a&quot;, MODE=&quot;0666&quot;, GROUP=&quot;dialout&quot;
+</pre></div>
+</div>
+<p>The user should also need to be in the <em>dialout</em> group.</p>
+<p>These rules are suitable for Olimex ARM-USB-OCD-H  and ARM-USB-TINY-H cables but a different one will be needed
+for other cables.</p>
+</div>
+</div>
+<div class="section" id="gdb">
+<h1>GDB<a class="headerlink" href="#gdb" title="Permalink to this headline">¶</a></h1>
+<p>To be able to connect GDB to the board, the debug bridge must open an RSP server on which
+GDB will connect.</p>
+<p>For that, the application must be configured with the following option:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ make conf gdb=1
+</pre></div>
+</div>
+<p>Then when the application is launched, you should see the following message telling that the RSP
+server is opened:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ RSP server opened on port 1234
+</pre></div>
+</div>
+<p>Then from another terminal, GDB must be launched and connected:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ riscv32-unknown-elf-gdb
+$ (gdb) target remote :1234
+</pre></div>
+</div>
+<p>The port specified here must be the same as the one reported earlier.</p>
+<p>There are currently a few GDB issues. First it is using by default the 64bit mode if no binary is specified.
+So a binary must always be specified until this is fixed (with option file). Then breakpoints with compressed instructions generate a GDB error. To avoid it, the following gdb property must be set:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ (gdb) set riscv use_compressed_breakpoint off
+</pre></div>
+</div>
+<p>There are also a few limitations, watchpoints are not supported.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Board</a><ul>
+<li><a class="reference internal" href="#board-setup">Board setup</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gdb">GDB</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="virtual_platform.html"
+                        title="previous chapter">GVSOC</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pulpos.html"
+                        title="next chapter">PulpOS</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/board.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pulpos.html" title="PulpOS"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="virtual_platform.html" title="GVSOC"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pulp SDK 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2019, ETH Zurich.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>
